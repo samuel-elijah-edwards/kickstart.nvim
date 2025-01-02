@@ -172,6 +172,18 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.api.nvim_create_user_command('SaveAndQuit', function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  -- Save the file
+  vim.cmd 'w'
+  -- Check if `alpha` is installed and run it
+  require('alpha').start()
+  -- Quit the buffer and Neovim
+end, {})
+
+-- Map <leader>wq to the user command
+vim.api.nvim_set_keymap('n', '<leader>wq', ':SaveAndQuit<CR>', { noremap = true, silent = true })
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -198,7 +210,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-
+  'famiu/bufdelete.nvim',
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
